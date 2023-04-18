@@ -14,11 +14,11 @@ namespace ManagementApplication
 
             builder.Services.AddControllersWithViews(); //
 
-            builder.Services.AddLocalization(); // Добавление службы локализации
+            builder.Services.AddLocalization(); //
 
             var app = builder.Build();
 
-            app.UseRequestLocalization("en-GB"); // Установка региональных параметров en-GB
+            app.UseRequestLocalization("en-GB"); // en-GB
 
 
             if (!app.Environment.IsDevelopment())

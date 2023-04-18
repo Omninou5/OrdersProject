@@ -1,0 +1,150 @@
+﻿@model Order
+
+@{
+    ViewData["Title"] = "Редактирование заказа";
+    int countItem = 0;
+}
+
+<script language="JavaScript" type="text/javascript" src="~/js/ScriptCreate.js"></script>
+
+<div class="mb-3">
+    <a class="btn btn-sm btn-outline-primary" asp-action="Index"> < К списку заказов</a>
+</div>
+
+<h3>Редактирование заказа</h3>
+<hr />
+
+<form asp-action="Edit">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="shadow p-3 mb-5 me-3 bg-body-tertiary rounded">
+                <div class="mb-3">
+                    <label asp-for="Number" class="form-label">Номер заказа</label>
+                    <input asp-for="Number" type="text" class="form-control">
+                    <span asp-validation-for="Number" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Date" class="form-label">Дата/Время</label>
+                    <input asp-for="Date" type="datetime-local" class="form-control">
+                    <span asp-validation-for="Date" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ProviderId" class="form-label">Поставщик</label>
+                    <select asp-for="ProviderId" class="form-select" aria-label="Поставщик заказа">
+                        <option value="-1" selected>Выберите поставщика</option>
+                        @foreach (var item in ViewBag.ProvidersList)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="ProviderId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Сохранить изменения" class="btn btn-primary" />
+                </div>
+            </div>
+
+            <!-- Отображение сводки всех ошибок валидации -->
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+        </div>
+
+
+        <div class="col-md-8 shadow p-3 mb-5 bg-body-tertiary rounded">
+            <div class="text-left">
+                <h1 class="display-6">Элементы заказа</h1>
+            </div>
+
+            <!-- Таблица элементов заказа -->
+            <table class="table table-hover">
+                <thead class="table-primary">
+                    <tr>
+                        <th scope="col">№</th>
+                        <th scope="col">Название элемента</th>
+                        <th scope="col">Количество</th>
+                        <th scope="col">Единица измерения</th>
+                        <th scope="col">Действия</th>
+                    </tr>
+                </thead>
+                <tbody id="itemBlock">
+
+                    @if (Model != null && Model.OrderItems != null)
+                    {
+                        @foreach (var item in Model.OrderItems)
+                        {
+                            <tr id="rowItem_@countItem">
+
+                                <th scope="col">@(countItem + 1)</th>
+                                <td>
+                                    <input type="hidden" id="ItemId_@countItem" name="OrderItems[@countItem].Id" value="@item.Id" class="hiddeninputs" />
+                                    <input id="ItemName_@countItem" name="OrderItems[@countItem].Name" value="@item.Name" type="text" readonly class="form-control-plaintext form-control-sm iteminputs" />
+                                </td>
+                                <td>
+                                    <input id="ItemQuantity_@countItem" name="OrderItems[@countItem].Quantity" value="@item.Quantity" type="number" readonly class="form-control-plaintext form-control-sm iteminputs" />
+                                </td>
+                                <td>
+                                    <input id="ItemUnit_@countItem" name="OrderItems[@countItem].Unit" value="@item.Unit" type="text" readonly class="form-control-plaintext form-control-sm iteminputs" />
+                                </td>
+                                <td>
+                                    <button onclick="editItem(@countItem)" type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-sm btn-outline-success">Редактировать</button>
+                                    <button onclick="deleteItem(@(countItem++))" type="button" class="btn btn-sm btn-outline-danger">Удалить</button>
+                                </td>
+                            </tr>
+                        }
+                    }
+
+                </tbody>
+            </table>
+
+            <!-- Кнопка-добавить элемент (Триггер модального окна) -->
+            <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Добавить элемент заказа</button>
+            <br />
+            <span asp-validation-for="OrderItems" class="text-danger"></span>
+
+        </div>
+    </div>
+</form>
+
+
+
+<!-- Модальное окно создания элемента -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Элемент заказа</h1>
+                <button type="button" onclick="clearModal()" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="ItemNameModal" class="form-label">Название</label>
+                    <input name="ItemNameModal" id="ItemNameModal" type="text" class="form-control" />
+                    <span for="ItemNameModal" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label for="ItemQuantityModal" class="form-label">Количество</label>
+                    <input name="ItemQuantityModal" id="ItemQuantityModal" class="form-control" type="number" step="any" min="0" />
+                    <span for="ItemQuantityModal" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label for="ItemUnitModal" class="form-label">Единица измерения</label>
+                    <input name="ItemUnitModal" id="ItemUnitModal" type="text" class="form-control" />
+                    <span for="ItemUnitModal" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" onclick="clearModal()" class="btn btn-secondary" data-bs-dismiss="modal">Отменить</button>
+                <button type="button" onclick="actionItem()" id="itemIdModal" data-id="-1" class="btn btn-primary" data-bs-dismiss="modal">Сохранить</button>
+            </div>
+        </div>
+
+    </div>
+</div>

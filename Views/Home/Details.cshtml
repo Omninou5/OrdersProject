@@ -1,0 +1,83 @@
+﻿@model OrderProviderItem
+
+@{
+    ViewData["Title"] = "Информация о заказе";
+}
+
+<div class="mb-3">
+    <a class="btn btn-sm btn-outline-primary" asp-action="Index"> < К списку заказов</a>
+</div>
+
+<h3>Информация о заказе</h3>
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="shadow p-3 mb-5 me-3 bg-body-tertiary rounded">
+            <div class="mb-3">
+                <dl class="row">
+                    <dt class="col-md-4">ID Заказа</dt>
+                    <dd class="col-md-8">@Model.Id</dd>
+
+                    <dt class="col-md-4">№ Заказа</dt>
+                    <dd class="col-md-8">@Model.Number</dd>
+
+                    <dt class="col-md-4">Дата заказа</dt>
+                    <dd class="col-md-8">@Model.Date</dd>
+
+                    <dt class="col-md-4">Название поставщика</dt>
+                    <dd class="col-md-8">@Model.ProviderName</dd>
+                </dl>
+            </div>
+
+            <div>
+                <a class="btn btn-success" asp-action="Edit" asp-route-id="@Model?.Id">Редактировать</a>
+                <a class="btn btn-danger" asp-action="Delete" asp-route-id="@Model?.Id">Удалить</a>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="col-md-8 shadow p-3 mb-5 bg-body-tertiary rounded">
+        <div class="text-left">
+            <h1 class="display-6">Элементы заказа</h1>
+        </div>
+
+        @if (Model != null)
+        {
+            if (Model.OrderItems != null && Model.OrderItems.FirstOrDefault() != null)
+            {
+                <!-- Таблица элементов заказа -->
+                <table class="table table-hover">
+                    <thead class="table-primary">
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Название элемента</th>
+                            <th scope="col">Количество</th>
+                            <th scope="col">Единица измерения</th>
+                        </tr>
+                    </thead>
+                    <tbody id="itemBlock">
+
+                        @foreach (var item in Model.OrderItems)
+                        {
+                            <tr>
+                                <th scope="col">@item.Id</th>
+                                <td>@item.Name</td>
+                                <td>@item.Quantity</td>
+                                <td>@item.Unit</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <h4 class="text-danger">Элементы заказа отсутствуют!</h4>
+            }
+        }
+
+    </div>
+</div>

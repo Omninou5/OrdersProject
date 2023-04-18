@@ -1,0 +1,92 @@
+﻿@model FilterView
+
+@{
+    ViewData["Title"] = "Заказы";
+}
+
+<form method="get">
+    <div class="shadow p-3 mb-5 bg-body-tertiary rounded">
+
+        <h1 class="display-6">Фильтр</h1>
+
+        <div class="d-inline-block mb-3">
+            <label>Период:</label>
+            <div class="row">
+                <div class="col mb-2">
+                    <div class="form-group d-inline-block">
+                        <label> От:</label>
+                        <input name="SelectedStartDate" id="startDate" type="datetime-local" value="@DateTime.Now.AddMonths(-1).ToString("yyyy-MM-ddTHH:mm")" class="form-control">
+                    </div>
+                </div>
+
+                <div class="col mb-2">
+                    <div class="form-group d-inline-block">
+                        <label>До:</label>
+                        <input name="SelectedEndDate" id="endDate" type="datetime-local" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" class="form-control">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+
+            <div class="col-lg mb-2">
+                <label>Номер заказа: </label>
+                <select asp-for="SelectedNumbers" asp-items="@Model.Orders" class="form-select">
+                    <option value="">Выберите номер заказа</option>
+                </select>
+            </div>
+
+            <div class="col-lg mb-2">
+                <label>Поставщик заказа: </label>
+                <select asp-for="SelectedProviders" asp-items="@Model.Providers" class="form-select">
+                    <option value="">Выберите поставщика</option>
+                </select>
+            </div>
+
+            <div class="col-lg mb-2">
+                <label>Название элемента заказа: </label>
+                <select asp-for="SelectedName" asp-items="@Model.ItemNames" class="form-select">
+                    <option value="">Выберите название элемента</option>
+                </select>
+            </div>
+
+            <div class="col-lg mb-2">
+                <label>Единица измерения заказа: </label>
+                <select asp-for="SelectedUnit" asp-items="@Model.ItemUnits" class="form-select">
+                    <option value="">Выберите единицу элемента</option>
+                </select>
+            </div>
+
+            <div class="col-md">
+                <input type="submit" class="btn btn-primary mt-5" value="Применить фильтр">
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<h1 class="display-6">Заказы</h1>
+
+<table class="table table-hover">
+    <thead class="table-info">
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">№ заказа</th>
+            <th scope="col">Дата заказа</th>
+            <th scope="col">Название Поставщика</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model.OrderProviderItems)
+        {
+            <tr role="button" onclick="window.location.href='/Home/Details/@item.Id'; return false">
+                <th scope="row">@item.Id</th>
+                <td>@item.Number</td>
+                <td>@item.Date</td>
+                <td>@item.ProviderName</td>
+            </tr>
+        }
+    </tbody>
+</table>
